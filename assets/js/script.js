@@ -2,11 +2,18 @@ var cityEl = document.getElementById("city");
 var cityInputEl = document.getElementById("cityinput");
 var currentEl = document.getElementById("current");
 var weatherHolderEl = document.getElementById("weatherHolder");
+var displayCityHistoryEl = document.getElementById("history");
 
 
 var cityFinder = function(event) {
     event.preventDefault();
+    weatherHolderEl.innerHTML = ""
     var city = cityEl.value.trim();
+
+    var storeCity = localStorage.setItem("city", city);
+    var storedCityPull = localStorage.getItem(storeCity);
+    displayCityHistoryEl.appendChild(storedCityPull);
+
     getWeather(city);
 };
 
@@ -29,11 +36,11 @@ var getWeather = function(city) {
                         var currentUvi = data.current.uvi;
                         var currentWind = data.current.wind_speed;
                         var currentHumidity = data.current.humidity;
+                        var weatherIcon = data.current.weather[0].icon;
                         var daily = data.daily;
-                        currentWeather(currentTemp, currentUvi, currentWind, currentHumidity, city);
+                        currentWeather(currentTemp, currentUvi, currentWind, currentHumidity, city, weatherIcon);
                         fiveDay(daily);
                         })
-                        console.log(currentWind);
                     }
                 })
             })
@@ -42,9 +49,19 @@ var getWeather = function(city) {
 };
 
 // display current data
-var currentWeather = function(currentTemp, currentUvi, currentWind, currentHumidity, city) {
+var currentWeather = function(currentTemp, currentUvi, currentWind, currentHumidity, city, weatherIcon) {
+    var today = new Date();
+    var dd = String(today.getDate())
+    var mm = String(today.getMonth() + 1)
+    var yyyy = today.getFullYear();
+    today = " - " + mm + '/' + dd + '/' + yyyy;
+    
     var currentCity = document.getElementById("currentCity");
-    currentCity.textContent = city.toUpperCase();
+    currentCity.textContent = city.toUpperCase().concat(today);
+
+    var DOM_img = document.createElement("img");
+    DOM_img.src = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+    currentCity.appendChild(DOM_img);
 
     var temp = document.getElementById("currentTemp");
     temp.textContent = "Temp: " + tempConvert(currentTemp) + " °F";
@@ -57,13 +74,28 @@ var currentWeather = function(currentTemp, currentUvi, currentWind, currentHumid
 
     var humidity = document.getElementById("currentHumidity");
     humidity.textContent = "Humidity: " + currentHumidity + "%";
+
+    var uviCode = function (currentUvi) {
+        if (currentUvi >= 8) {
+            console.log(currentUvi);
+            document.getElementById("currentUvi").classList = "bg-danger"
+        }
+        else if (currentUvi <= 7 && currentUvi >= 3) {
+            document.getElementById("currentUvi").classList = "bg-warning"
+        }
+        else if (currentUvi <= 2) {
+            document.getElementById("currentUvi").classList = "bg-success"
+        }
+    }
+
+    uviCode(currentUvi);
 }
 
 // display five day forecast
 var fiveDay = function(daily) {
     for (i = 1; i < 6; i++) {
         var weatherHolder = document.createElement("div")
-        weatherHolder.className = ("card col-2 m-2");
+        weatherHolder.className = ("card col-2 m-2 bg-secondary text-light");
         var weatherDate = document.createElement("h5");
         var weatherTemp = document.createElement("p");
         var weatherWind = document.createElement("p");
@@ -81,6 +113,9 @@ var fiveDay = function(daily) {
         weatherWind.textContent = "Wind: " + daily[i].wind_speed + " mph";
         weatherHumidity.textContent = "Humidity: " + daily[i].humidity + "%";
 
+        var DOM_img = document.createElement("img");
+        DOM_img.src = "http://openweathermap.org/img/wn/" + daily[i].weather[0].icon + "@2x.png";
+        weatherHolder.append(DOM_img);
 
         weatherHolderEl.className = ("row");
         weatherHolder.append(weatherDate, weatherTemp, weatherWind, weatherHumidity);
@@ -88,12 +123,14 @@ var fiveDay = function(daily) {
     }
 }
 
+
 //convert temp
 var tempConvert = function(temp) {
-    return((temp-273.15)*(9/5) + 32).toFixed(2);
+    return((temp-273.15)*(9/5) + 32).toFixed(1);
 }
 
-// local storage city search history
+
+
 
 cityInputEl.addEventListener("submit", cityFinder);
 

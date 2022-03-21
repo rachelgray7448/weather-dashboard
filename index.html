@@ -11,23 +11,26 @@
 <body class="container-fluid">
     <h1 class="text-center bg-info">Weather Dashboard</h1>
     <div class="row">
-        <div class="col-3">
+        <div class="col-3 border">
             <h2>Search for a City:</h2>
             <form id="cityinput">
-                <input type="text" id="city">
+                <input type="text" id="city" class="btn-block">
                 <button type="submit" id="submit" class="btn-block btn-primary">Submit</button>
                 <div id="history"></div>
             </form>
         </div>
         <div class="col-9">
-            <div id="current">
+            <div id="current" class="border">
                 <h2 id="currentCity">City Name, Date</h2>
+                <img id="img"/>
                 <p id="currentTemp">Temp:</p>
                 <p id="currentWind">Wind:</p>
                 <p id="currentHumidity">Humidity:</p>
                 <p id="currentUvi">UV Index:</p>
             </div>
-            <div id="weatherHolder"></div>
+            <h3>5-Day Forecast</h3>
+            <div id="weatherHolder">
+            </div>
         </div>
     </div>
     
