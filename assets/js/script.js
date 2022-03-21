@@ -3,19 +3,45 @@ var cityInputEl = document.getElementById("cityinput");
 var currentEl = document.getElementById("current");
 var weatherHolderEl = document.getElementById("weatherHolder");
 var displayCityHistoryEl = document.getElementById("history");
+//var newArr = [] || ;
+var searchHistory = JSON.parse(localStorage.getItem("city")) || [];
 
+console.log(searchHistory);
 
 var cityFinder = function(event) {
     event.preventDefault();
     weatherHolderEl.innerHTML = ""
     var city = cityEl.value.trim();
-
-    var storeCity = localStorage.setItem("city", city);
-    var storedCityPull = localStorage.getItem(storeCity);
-    displayCityHistoryEl.appendChild(storedCityPull);
-
     getWeather(city);
+    searchHistory.push(city)
+    localStorage.setItem("city", JSON.stringify(searchHistory));
+    cityHistory();
+    console.log("test")
 };
+
+
+var cityHistory = function () {
+    displayCityHistoryEl.innerHTML = "";
+
+    for (i = 0; i < searchHistory.length; i++) {
+        var pastSearches = document.createElement("li");
+        displayCityHistoryEl.appendChild(pastSearches);
+        pastSearches.innerHTML = "<button class=btn-block>" + searchHistory[i] + "</button>"
+    }
+
+}
+
+var buttonHandler = function (event) {
+    if (cityButton.innerHTML = "submit") {
+        return;
+    }
+    var cityButton = event.target;
+    getWeather(cityButton.innerHTML);
+    
+}
+
+cityHistory();
+
 
 //fetch city and weather information
 var getWeather = function(city) {
@@ -134,3 +160,4 @@ var tempConvert = function(temp) {
 
 cityInputEl.addEventListener("submit", cityFinder);
 
+displayCityHistoryEl.addEventListener("click", buttonHandler);
