@@ -16,7 +16,6 @@ var cityFinder = function(event) {
     searchHistory.push(city)
     localStorage.setItem("city", JSON.stringify(searchHistory));
     cityHistory();
-    console.log("test")
 };
 
 
@@ -45,7 +44,7 @@ cityHistory();
 
 //fetch city and weather information
 var getWeather = function(city) {
-    var cityUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=3955f3d0370ecadb33915059a071341c";
+    var cityUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=3955f3d0370ecadb33915059a071341c";
     fetch(cityUrl).then(function(response) {
         if(response.ok) {
             response.json().then(function(data) {
